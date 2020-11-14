@@ -1,16 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
+import Search from "./Search";
+import Display from "./Display";
+import NameAdder from "./NameAdder";
+import axios from "axios";
 
 const App = () => {
-    const [persons, setPersons] = useState([
-        {
-            name: 'Arto Hellas',
-            number: "577 45-75-02",
-            key: "Arto Hellas"
-        }
-    ])
+    const [persons, setPersons] = useState([])
 
-    const [newName, setNewName] = useState('')
+    const [newName, setNewName] = useState('');
     const [newNum, setNewNum] = useState('');
+    const [newSearch, setNewSearch] = useState('')
 
     const addName = (e) => {
         e.preventDefault();
@@ -25,32 +24,37 @@ const App = () => {
     }
 
     const handleName = (e) => {
-        setNewName(e.target.value)
+        setNewName(e.target.value);
     }
 
     const handleNewNum = (e) => {
-        setNewNum(e.target.value)
+        setNewNum(e.target.value);
     }
+
+    const handleSearch = (e) => {
+        setNewSearch(e.target.value);
+    }
+
+    useEffect(() => {
+        axios.get("http://localhost:3001/persons")
+            .then(response => setPersons(response.data))
+    }, []);
 
     return (
         <div>
-            <h2>Phonebook</h2>
-            <form onSubmit={addName}>
-                <div>
-                    name: <input onChange={handleName}
-                        value={newName} />
-                </div>
-                <div>
-                    number: <input onChange={handleNewNum}
-                        value={newNum} />
-                </div>
-                <div>
-                    <button type="submit"
-                        onSubmit={addName}>add</button>
-                </div>
-            </form>
-            <h2>Numbers</h2>
-            {persons.map(item => <p>{item.name} {item.number}</p>)}
+            <h1>Phonebook</h1>
+            <Search
+                handleSearch={handleSearch}
+                newSearch={newSearch} />
+            <NameAdder
+                addName={addName}
+                handleName={handleName}
+                newName={newName}
+                handleNewNum={handleNewNum}
+                newNum={newNum} />
+            <Display
+                persons={persons}
+                newSearch={newSearch} />
         </div>
     )
 }
