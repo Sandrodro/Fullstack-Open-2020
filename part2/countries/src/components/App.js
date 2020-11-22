@@ -16,6 +16,7 @@ const App = () => {
     }
 
     const showDeets = (e) => {
+        e.preventDefault();
         let toShow = e.target.getAttribute('id');
         let city = e.target.getAttribute("capital")
         let country = countriesToShow.filter(item => item.name == toShow);
